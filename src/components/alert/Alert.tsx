@@ -1,5 +1,7 @@
+
 "use client";
 
+import { useEffect } from "react";
 import {
   FiCheckCircle,
   FiAlertCircle,
@@ -17,52 +19,78 @@ export default function Alert({
   message,
   onClose,
 }: AlertProps) {
+  // Automatically close after 4 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 4000);
+
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  const isSuccess = type === "success";
+
   return (
-    <div className="fixed right-5 top-5 z-50 w-[350px]">
+    <div className="fixed right-5 top-5 z-50 w-[360px] animate-in slide-in-from-right-5 fade-in duration-300">
       <div
-        className={`flex items-start gap-3 rounded-xl border bg-white p-4 shadow-lg ${
-          type === "success"
-            ? "border-green-200"
-            : "border-red-200"
+        className={`relative overflow-hidden rounded-2xl border bg-white/95 p-4 shadow-2xl backdrop-blur-md ${
+          isSuccess
+            ? "border-green-200 shadow-green-100"
+            : "border-red-200 shadow-red-100"
         }`}
       >
-        {/* Icon */}
+        <div className="flex items-start gap-3">
+          {/* Icon */}
+          <div
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
+              isSuccess
+                ? "bg-green-100 text-green-600"
+                : "bg-red-100 text-red-600"
+            }`}
+          >
+            {isSuccess ? (
+              <FiCheckCircle size={22} />
+            ) : (
+              <FiAlertCircle size={22} />
+            )}
+          </div>
+
+          {/* Content */}
+          <div className="min-w-0 flex-1">
+            <h3
+              className={`font-semibold ${
+                isSuccess
+                  ? "text-green-700"
+                  : "text-red-700"
+              }`}
+            >
+              {isSuccess ? "Success!" : "Something went wrong"}
+            </h3>
+
+            <p className="mt-1 break-words text-sm leading-5 text-gray-600">
+              {message}
+            </p>
+          </div>
+
+          {/* Close button */}
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close notification"
+            className="rounded-lg p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
+          >
+            <FiX size={18} />
+          </button>
+        </div>
+
+        {/* Progress bar */}
         <div
-          className={
-            type === "success"
-              ? "text-green-500"
-              : "text-red-500"
-          }
-        >
-          {type === "success" ? (
-            <FiCheckCircle size={22} />
-          ) : (
-            <FiAlertCircle size={22} />
-          )}
-        </div>
-
-        {/* Content */}
-        <div className="flex-1">
-          <h3 className="font-semibold">
-            {type === "success"
-              ? "Success"
-              : "Error"}
-          </h3>
-
-          <p className="mt-1 text-sm text-gray-600">
-            {message}
-          </p>
-        </div>
-
-        {/* Close */}
-        <button
-          type="button"
-          onClick={onClose}
-          className="text-gray-400 transition hover:text-gray-700"
-        >
-          <FiX size={18} />
-        </button>
+          className={`absolute bottom-0 left-0 h-1 w-full origin-left animate-[shrink_4s_linear_forwards] ${
+            isSuccess ? "bg-green-500" : "bg-red-500"
+          }`}
+        />
       </div>
     </div>
   );
 }
+
