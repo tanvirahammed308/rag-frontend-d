@@ -19,3 +19,7 @@ export interface Message {
   role: "user" | "assistant";
   content: string;
 }
+
+export interface ChatFormData {
+  message: string;
+}
