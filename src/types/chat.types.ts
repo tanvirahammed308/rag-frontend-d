@@ -1,7 +1,14 @@
+
+export interface UploadFormData {
+  file: FileList;
+}
+
+
 export interface UploadResponse {
   message: string;
   chunks: number;
 }
+
 
 export interface ChatResponse {
   answer: string;
