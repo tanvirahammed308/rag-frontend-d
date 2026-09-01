@@ -7,7 +7,8 @@ export const uploadDocument = async (
 ): Promise<UploadResponse> => {
   const formData = new FormData();
 
-  formData.append("file", file);
+    formData.append("document", file);
+
 
   const response = await api.post<UploadResponse>(
     "/documents/upload",
